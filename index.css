@@ -42,3 +42,14 @@
 .res-logo {
   width: 190px;
 } 
+
+.body-top {
+  margin: 10px;
+  justify-content: space-between;
+  display: flex;
+}
+
+.filter-btn {
+  padding: 10px;
+  cursor: pointer;
+}

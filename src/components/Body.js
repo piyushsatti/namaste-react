@@ -1,55 +1,29 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-import RestrauntCard from "./Restraunt";
-import resData from "../utils/constants";
+import RestrauntCard from "./RestrauntCard";
+import Shimmer from "./Shimmer";
+
+import useRestarauntCategories from "../utils/useRestrauntCategories";
 
 const Body = () => {
+  const categories = useRestarauntCategories();
 
-  const [restraunts, setRestraunts] = useState(resData);
+  const restaurants =
+    categories[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants ?? null;
 
-  useEffect(() => {
-    const a = async () => {
-      const raw_data = await fetch(
-        "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9966135&lng=77.5920581&collection=83639&tags=layout_CCS_Biryani&sortBy=&filters=&type=rcv2&offset=0&page_type=null"
-      );
-      const data = await raw_data.json();
-      console.log(data.data.cards.slice(3));
-      setRestraunts(data.data.cards.slice(3));
-    }
-    a();
-  }, []);
+  console.log(restaurants);
 
-  return (
-    <div className="body">
-      <div className="body-top">
-          <div className="filter">
-            <button className="filter-btn" onClick={
-              () => {
-                setRestraunts(resData.filter(
-                  (restraunt) => {
-                    return restraunt.card.card.info.avgRating > 4.3;
-                  }
-                ))
-              }
-            }
-            >
-              Top Rated Restraunts
-            </button>
-          </div>
-          <div className="Search">
-            Search
-          </div>
-      </div>
-      <div className="res-container">
-        { 
-          restraunts.map((restraunt) => {
-              return <RestrauntCard key={restraunt.card.card.info.id} resData={restraunt}/>
-            }
-          )
-        }
-      </div>
+  return !restaurants ? (
+    <Shimmer />
+  ) : (
+    <div className="flex flex-wrap">
+      {restaurants.map((restaurant) => (
+        <Link key={restaurant.info.id} to={"restaurants/" + restaurant.info.id}>
+          <RestrauntCard info={restaurant.info} />
+        </Link>
+      ))}
     </div>
   );
-}
+};
 
 export default Body;
